@@ -3,6 +3,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 
+const port = process.env.PORT || 3008;
+
 app.get('/', function(req, res){
   var express=require('express');
   app.use(express.static(path.join(__dirname)));
@@ -16,6 +18,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(3006, function(){
-  console.log('Listening On *:3006');
+http.listen(port, function(){
+  console.log('Listening On *:' + port);
 });
