@@ -1,12 +1,11 @@
 {
   "name": "gameserver",
   "version": "1.0.0",
-  "description": "",
+  "description": "Mika real time bday game",
   "main": "index.js",
   "dependencies": {
-    "cors": "^2.8.4",
     "express": "^4.16.2",
-    "http": "^0.0.0",
+    "http": "0.0.0",
     "socket.io": "^2.0.4"
   },
   "devDependencies": {},

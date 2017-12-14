@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Submit</title>
+    <link href="../css/reset.css" rel="stylesheet" type="text/css">
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato|Questrial" rel="stylesheet">
+
+    <style>
+      body {
+        text-align: center;
+        background: #000 url('../img/background-teal.jpg') center center fixed;
+      }
+      .btn-default {
+        font-family: 'Questrial', sans-serif;
+        font-weight: bold;
+        width: 250px;
+        margin: 20px 0;
+        font-size: 30px;
+      }
+      .wrapper {
+        width: 200px;
+        height: 200px;
+        top: 50%;
+        left: 50%;
+        position: fixed;
+        margin-left: -100px;
+        margin-top: -100px;
+      }
+      .header {
+        width: 500px;
+        height: 500px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-left: -250px;
+        margin-top: -250px;
+      }
+      h1 {
+        color: #fff;
+        font-family: 'Questrial',sans-serif;
+        font-size: 56px;
+      }
+      h4 {
+        font-size: 26px;
+        color: rgba(0,0,0,0.6);
+      }
+      h6 {
+        font-family: 'Questrial', sans-serif;
+        font-size: 22px;
+        color: #eee;
+        position: relative;
+        top: -18px;
+      }
+      h6 span {
+        color: rgba(255, 160, 40, 1);
+        font-weight: 600;
+      }
+      #enterName {
+        width: 350px;
+        height: 100px;
+        position: relative;
+        left: -46px;
+      }
+      #enterName[type="text"] {
+        font-size: 44px;
+        font-family: 'Lato', sans-serif;
+        text-align: center;
+      }
+      #enterAnswer {
+        width: 350px;
+        height: 100px;
+        position: relative;
+        left: -46px;
+      }
+      #enterAnswer[type="text"] {
+        font-size: 44px;
+        font-family: 'Lato', sans-serif;
+        text-align: center;
+      }
+      .exceedTeamNameLength {
+        background: red;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="index">
+      <template v-if="!playing">
+        <div class="header">
+          <h1>
+              Enter a Team name
+          </h1>
+          <h6>
+              Can only be <span>13 characters long</span>
+          </h6>
+        </div>
+        <div class="wrapper">
+          <div class="row">
+            <input id="enterName" type="text" class="form-control" v-model="teamName" :class="{ exceedTeamNameLength: exceed }"></button>
+          </div>
+          <div class="row">
+            <button type="button" class="btn btn-default" @click="ready()">Ready to Play</button>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="header">
+          <h1>
+              {{ teamName }}
+          </h1>
+          <h4>
+              Score: {{ score }} points
+          </h4>
+          <template v-if="!noRound">
+            <div class="wrapper">
+              <div class="row">
+                <input id="enterAnswer" type="text" class="form-control" v-model="answer"></button>
+              </div>
+              <div class="row">
+                <button type="button" class="btn btn-default" @click="submitAnswer()">Submit Answer</button>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+              <h5>Waiting for the next round...</h5>
+          </template>
+        </div>
+      </template
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.9/vue.js" type="text/javascript"></script>
+    <script src="../javascript/socket.io.js"></script>
+    <script>
+        new Vue({
+            el: '#index',
+
+            data: {
+              answer: '',
+              exceed: false,
+              noRound: false,
+              playing: false,
+              score: 0,
+              socket: null,
+              teamName: ''
+            },
+
+            methods: {
+                initializeSocketConnection() {
+                  this.socket = io();
+                },
+
+                ready() {
+                    if (this.exceed) {
+                      alert('Team name is too long! If you wna play, respek the rules');
+                    } else {
+                      this.playing = true;
+                      this.sendTeamInformation();
+                    }
+                },
+
+                sendTeamInformation() {
+                    this.socket.emit('teamInformation', this.teamName);
+                },
+
+                submitAnswer() {
+
+                }
+            },
+
+            watch: {
+              teamName() {
+                if (this.teamName.length > 13) {
+                  this.exceed = true;
+                } else {
+                  this.exceed = false;
+                }
+              }
+            },
+
+            mounted() {
+              this.initializeSocketConnection();
+            }
+        });
+    </script>
+  </body>
+</html>
