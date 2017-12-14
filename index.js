@@ -2,6 +2,8 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+io.set('transports', [ 'websocket' ]);
+
 io.on('connection', function(socket){
   console.log('connected');
   socket.on('teamInformation', function(teamName){
