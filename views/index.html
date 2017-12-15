@@ -64,16 +64,19 @@
             Mikaela's bday
         </h1>
         <h6>
-            Click PLAYER to play
+            Click PLAY to be a part of the game
         </h6>
       </div>
       <div class="wrapper">
           <template v-if="!playerClicked">
             <div class="row">
-              <button type="button" class="btn btn-default" @click="gameRoom()">Game Master</button>
+              <button type="button" class="btn btn-default" @click="player()" style="background: orange;">Play</button>
             </div>
             <div class="row">
-              <button type="button" class="btn btn-default" @click="player()">Player</button>
+              <button type="button" class="btn btn-default" @click="gameRoom()">Game Room</button>
+            </div>
+            <div class="row">
+              <button type="button" class="btn btn-default" @click="admin()">Game Master</button>
             </div>
           </template>
           <template v-else>
@@ -93,12 +96,26 @@
             },
 
             methods: {
+                admin() {
+                    var password = prompt("Enter password");
+                    if (password == 'taewell') {
+                      window.location.replace('views/admin.html');
+                    } else {
+                      alert('Wrong password!');
+                    }
+                },
+
                 gameRoom() {
-                    window.location.replace('views/gameRoom.html');
+                    var password = prompt("Enter password");
+                    if (password == 'taewell') {
+                      window.location.replace('views/gameRoom.html');
+                    } else {
+                      alert('Wrong password!');
+                    }
                 },
 
                 player() {
-                  window.location.replace('views/player.html');
+                    window.location.replace('views/player.html');
                 }
             }
         });

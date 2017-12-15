@@ -150,6 +150,17 @@
             methods: {
                 initializeSocketConnection() {
                   this.socket = io();
+                  var self = this;
+                  this.socket.on('getPoint', function(winningTeamName){
+                    console.log('winner')
+                    console.log(winningTeamName);
+                    console.log(self.teamName);
+                    console.log(self.teamName == winningTeamName);
+                    if (self.teamName == winningTeamName) {
+                      alert('You got a point!');
+                      self.score = self.score + 1;
+                    }
+                  });
                 },
 
                 ready() {

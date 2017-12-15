@@ -3,7 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 
-const port = process.env.PORT || 3008;
+const port = process.env.PORT || 3010;
 
 app.get('/', function(req, res){
   var express=require('express');
@@ -16,6 +16,9 @@ io.on('connection', function(socket){
     console.log('message: ' + teamName);
     io.emit('newTeam', teamName);
   });
+  socket.on('awardPoint', function(teamName){
+    io.emit('getPoint', teamName);
+  })
 });
 
 http.listen(port, function(){
