@@ -22,8 +22,13 @@ io.on('connection', function(socket){
     console.log('round started');
     io.emit('roundStarted');
   });
-  socket.on('endROund', function(){
+  socket.on('endRound', function(){
     io.emit('roundEnded');
+  });
+  socket.on('submitAnswer', function(payload){
+    console.log('answer submitted');
+    console.log(payload);
+    io.emit('answerSubmitted', payload);
   });
 });
 

@@ -47,6 +47,17 @@
       .first {
         margin-left: 90px;
       }
+      #answer {
+        color: teal;
+        font-weight: 400;
+        font-size: 37px;
+      }
+      #answer-ready {
+        background: teal;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+      }
     </style>
   </head>
   <body>
@@ -60,9 +71,20 @@
         </h6>
       </div>
       <div class="container-fluid">
+        <div class="col-md-1 first">
+            <h5>Adriel</h5>
+            Ans: <span id="answer">12</span><br/>
+            <span>19 points</span>
+        </div>
           <template v-for="(team, index) in orderedTeams">
               <div class="col-md-1 first">
                   <h5>{{ team.teamName }}</h5>
+                  <div v-if="roundStarted">
+                    <span id="answer-ready" v-if="team.submittedAnswer">Answer Ready!</span>
+                  </div>
+                  <div v-else>
+                    <span id="answer">{{ team.answer }}</span>
+                  </div>
                   <span>{{ team.score }} points</span>
               </div>
           </template>
@@ -79,15 +101,16 @@
             el: '#gameRoom',
 
             data : {
+              roundStarted: false,
               teams: [],
             },
 
             computed: {
               orderedTeams() {
                 function compare(a,b) {
-                  if (a.last_nom < b.last_nom)
+                  if (a.score < b.score)
                     return -1;
-                  if (a.last_nom > b.last_nom)
+                  if (a.score > b.score)
                     return 1;
                   return 0;
                 }
@@ -99,12 +122,32 @@
                 initializeSocketConnection() {
                   var self = this;
                   this.socket = io();
-                  this.socket.on('newTeam', function(teamName){
+                  this.socket.on('newTeam', function(teamName) {
                     var object = {
                       'teamName': teamName,
-                      'score': 0
+                      'score': 0,
+                      'answer': 'asd',
+                      'submittedAnswer': false
                     }
                     self.teams.push(object);
+                  });
+                  this.socket.on('answerSubmitted', function(payload){
+                      for (var i = 0; i < self.teams.length; i++) {
+                        if (self.teams[i].teamName == payload.teamName) {
+                          self.teams[i].answer = payload.answer;
+                          self.teams[i].submittedAnswer = true;
+                        }
+                      }
+                  });
+                  this.socket.on('roundStarted', function(){
+                      self.roundStarted = true;
+                      for (var i = 0; i < self.teams.length; i++) {
+                          self.teams[i].answer = "";
+                          self.teams[i].submittedAnswer = false;
+                      }
+                  });
+                  this.socket.on('roundEnded', function(){
+                      self.roundStarted = false;
                   });
                 },
             },

@@ -124,7 +124,7 @@
             </div>
           </template>
           <template v-else>
-              <h5>Waiting for the next round...</h5>
+              <h5>{{ waitingMessage }}</h5>
           </template>
         </div>
       </template
@@ -144,14 +144,15 @@
               roundStarted: false,
               score: 0,
               socket: null,
-              teamName: ''
+              teamName: '',
+              waitingMessage: ''
             },
 
             methods: {
                 initializeSocketConnection() {
                   this.socket = io();
                   var self = this;
-                  this.socket.on('getPoint', function(winningTeamName){
+                  this.socket.on('getPoint', function(winningTeamName) {
                     if (self.teamName == winningTeamName) {
                       alert('You got a point!');
                       self.score = self.score + 1;
@@ -162,6 +163,7 @@
                   });
                   this.socket.on('roundEnded', function(){
                       self.roundStarted = false;
+                      this.waitingMessage = 'Waiting for next round...';
                   });
                 },
 
@@ -179,7 +181,13 @@
                 },
 
                 submitAnswer() {
-
+                    this.roundStarted = false;
+                    this.waitingMessage = 'Answer Submitted';
+                    var payload = {
+                      teamName: this.teamName,
+                      answer: this.answer
+                    };
+                    this.socket.emit('submitAnswer', payload);
                 }
             },
 
