@@ -13,12 +13,18 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
   socket.on('teamInformation', function(teamName){
-    console.log('message: ' + teamName);
     io.emit('newTeam', teamName);
   });
   socket.on('awardPoint', function(teamName){
     io.emit('getPoint', teamName);
-  })
+  });
+  socket.on('startRound', function(){
+    console.log('round started');
+    io.emit('roundStarted');
+  });
+  socket.on('endROund', function(){
+    io.emit('roundEnded');
+  });
 });
 
 http.listen(port, function(){

@@ -113,7 +113,7 @@
           <h4>
               Score: {{ score }} points
           </h4>
-          <template v-if="!noRound">
+          <template v-if="roundStarted">
             <div class="wrapper">
               <div class="row">
                 <input id="enterAnswer" type="text" class="form-control" v-model="answer"></button>
@@ -140,8 +140,8 @@
             data: {
               answer: '',
               exceed: false,
-              noRound: false,
               playing: false,
+              roundStarted: false,
               score: 0,
               socket: null,
               teamName: ''
@@ -152,14 +152,16 @@
                   this.socket = io();
                   var self = this;
                   this.socket.on('getPoint', function(winningTeamName){
-                    console.log('winner')
-                    console.log(winningTeamName);
-                    console.log(self.teamName);
-                    console.log(self.teamName == winningTeamName);
                     if (self.teamName == winningTeamName) {
                       alert('You got a point!');
                       self.score = self.score + 1;
                     }
+                  });
+                  this.socket.on('roundStarted', function(){
+                      self.roundStarted = true;
+                  });
+                  this.socket.on('roundEnded', function(){
+                      self.roundStarted = false;
                   });
                 },
 
