@@ -145,7 +145,7 @@
               score: 0,
               socket: null,
               teamName: '',
-              waitingMessage: ''
+              waitingMessage: 'Waiting for next round...'
             },
 
             methods: {
@@ -187,6 +187,7 @@
                       teamName: this.teamName,
                       answer: this.answer
                     };
+                    this.answer = '';
                     this.socket.emit('submitAnswer', payload);
                 }
             },

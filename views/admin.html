@@ -59,6 +59,9 @@
       table th {
         font-weight: bold;
       }
+      table tr {
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -81,7 +84,7 @@
             </thead>
             <tbody>
               <template v-for="team in orderedTeams">
-                <tr>
+                <tr @click="awardPoint(team.teamName)">
                   <td>{{ team.teamName }}</td>
                   <td>{{ team.answer }}</td>
                 </tr>
@@ -133,6 +136,13 @@
                       'answer': null
                     }
                     self.teams.push(object);
+                  });
+                  this.socket.on('answerSubmitted', function(payload){
+                      for (var i = 0; i < self.teams.length; i++) {
+                        if (self.teams[i].teamName == payload.teamName) {
+                          self.teams[i].answer = payload.answer;
+                        }
+                      }
                   });
                 },
 
